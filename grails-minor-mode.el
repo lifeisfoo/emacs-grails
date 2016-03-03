@@ -3,7 +3,7 @@
 ;; Copyright (c) 2016 Alessandro Miliucci
 ;;
 ;; Authors: Alessandro Miliucci <lifeisfoo@gmail.com>
-;; Version: 0.1.0
+;; Version: 0.1.1
 ;; URL: https://github.com/lifeisfoo/grails-minor-mode
 ;; Package-Requires: ((emacs "24"))
 
