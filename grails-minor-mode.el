@@ -1,4 +1,4 @@
-;;; grails-minor-mode.el --- Grails project navigation made easy -*- lexical-binding: t -*-
+;;; grails-minor-mode.el --- Grails project navigation made easy
 ;;
 ;; Copyright (c) 2016 Alessandro Miliucci
 ;;
@@ -26,8 +26,8 @@
 
 ;; Description:
 
-;; grails-minor-mode is an emacs minor mode that allows to easily
-;; navigate grails projects. It allows jump to a model, to a view,
+;; grails-minor-mode is an Emacs minor mode that allows an easy
+;; navigation of Gails projects.  It allows jump to a model, to a view,
 ;; to a controller or to a service.
 ;;
 ;; For more details, see the project page at
@@ -35,8 +35,8 @@
 ;;
 ;; Installation:
 ;;
-;; Copy this file to to some location in your emacs load path. Then add
-;; "(require 'grails-minor-mode)" to your emacs initialization (.emacs,
+;; Copy this file to to some location in your Emacs load path.  Then add
+;; "(require 'grails-minor-mode)" to your Emacs initialization (.emacs,
 ;; init.el, or something).
 ;;
 ;; Example config:
@@ -54,14 +54,14 @@
 ;; these major modes are loaded (only in this directory tree - the project tree)
 ;; (you can attach it to other modes if you want).
 
-;; The first time that this code is executed, emacs will show a security
+;; The first time that this code is executed, Emacs will show a security
 ;; prompt: answer "!" to mark code secure and save your decision.
 ;; (a configuration line is automatically added to your .emacs file)
 
 ;;; Code:
 
 (defun extract-name (controller-file-path start-from ending-regex)
-  "Transform MyClassController.groovy to MyClass, or my/package/MyClassController.groovy to my/package/MyClass"
+  "Transform MyClassController.groovy to MyClass, or my/package/MyClassController.groovy to my/package/MyClass."
   (let ((end (string-match ending-regex (substring controller-file-path start-from nil))))
     (substring (substring controller-file-path start-from nil) 0 end)))
 
@@ -179,3 +179,5 @@
   :group 'grails)
 
 (provide 'grails-minor-mode)
+
+;;; grails-minor-mode.el ends here
