@@ -9,6 +9,9 @@ Grails-minor-mode allows you to fast open a domain class, a controller
 or service just typing it's name. Moreover it can jump from the current
 domain|controller|service to the relative domain|controller|service.
 
+This minor mode __doesn't have any external dependencies__ and works nicely 
+with Grails 2 and Grails 3 projects.
+
 ### Available commands
   
 | Shortcut | Effect | Example |
