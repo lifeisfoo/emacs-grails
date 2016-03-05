@@ -1,4 +1,4 @@
-;;; grails.el --- Emacs minor mode for Grails projects
+;;; grails.el --- Minor mode for Grails projects
 ;;
 ;; Copyright (c) 2016 Alessandro Miliucci
 ;;
@@ -26,7 +26,7 @@
 
 ;; Description:
 
-;; Grails.el is an Emacs minor mode that allows an easy
+;; Grails.el is a minor mode that allows an easy
 ;; navigation of Gails projects.  It allows jump to a model, to a view,
 ;; to a controller or to a service.
 ;;
