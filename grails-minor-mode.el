@@ -1,10 +1,10 @@
-;;; grails-minor-mode.el --- Grails project navigation made easy
+;;; grails.el --- Emacs minor mode for Grails projects
 ;;
 ;; Copyright (c) 2016 Alessandro Miliucci
 ;;
 ;; Authors: Alessandro Miliucci <lifeisfoo@gmail.com>
 ;; Version: 0.1.1
-;; URL: https://github.com/lifeisfoo/grails-minor-mode
+;; URL: https://github.com/lifeisfoo/emacs-grails
 ;; Package-Requires: ((emacs "24"))
 
 ;; This program is free software: you can redistribute it and/or modify
@@ -26,31 +26,31 @@
 
 ;; Description:
 
-;; grails-minor-mode is an Emacs minor mode that allows an easy
+;; Grails.el is an Emacs minor mode that allows an easy
 ;; navigation of Gails projects.  It allows jump to a model, to a view,
 ;; to a controller or to a service.
 ;;
 ;; For more details, see the project page at
-;; https://github.com/lifeisfoo/grails-minor-mode.
+;; https://github.com/lifeisfoo/emacs-grails
 ;;
 ;; Installation:
 ;;
 ;; Copy this file to to some location in your Emacs load path.  Then add
-;; "(require 'grails-minor-mode)" to your Emacs initialization (.emacs,
+;; "(require 'grails)" to your Emacs initialization (.emacs,
 ;; init.el, or something).
 ;;
 ;; Example config:
 ;;
-;;   (require 'grails-minor-mode)
+;;   (require 'grails)
 
-;; Then, to auto enable grails-minor-mode, create a .dir-locals.el file
+;; Then, to auto enable grails mode, create a .dir-locals.el file
 ;; in the root of the grails project with this configuration:
 
-;; ((groovy-mode (grails-minor-mode . 1))
-;;  (html-mode (grails-minor-mode . 1))
-;;  (java-mode (grails-minor-mode . 1)))
+;; ((groovy-mode (grails . 1))
+;;  (html-mode (grails . 1))
+;;  (java-mode (grails . 1)))
 
-;; In this way, the grails-minor-mode will be auto enabled when any of
+;; In this way, the grails mode will be auto enabled when any of
 ;; these major modes are loaded (only in this directory tree - the project tree)
 ;; (you can attach it to other modes if you want).
 
@@ -60,7 +60,7 @@
 
 ;;; Code:
 
-(defun extract-name (controller-file-path start-from ending-regex)
+(defun grails-extract-name (controller-file-path start-from ending-regex)
   "Transform MyClassController.groovy to MyClass, or my/package/MyClassController.groovy to my/package/MyClass."
   (let ((end (string-match ending-regex (substring controller-file-path start-from nil))))
     (substring (substring controller-file-path start-from nil) 0 end)))
@@ -71,10 +71,10 @@
     (let ((end (match-end 0)))
       (let ((in-grails-path (substring file-name end nil))) ;; substring that follow 'grails-app/' to the end
 	(let ((dir-type (substring in-grails-path (string-match "^[a-zA-Z]+" in-grails-path) (match-end 0))))
-	  (cond ((string= dir-type "controllers") (extract-name in-grails-path (+ 1 (match-end 0)) "Controller\.groovy"))
-		((string= dir-type "domain") (extract-name in-grails-path (+ 1 (match-end 0)) "\.groovy"))
+	  (cond ((string= dir-type "controllers") (grails-extract-name in-grails-path (+ 1 (match-end 0)) "Controller\.groovy"))
+		((string= dir-type "domain") (grails-extract-name in-grails-path (+ 1 (match-end 0)) "\.groovy"))
 		((string= dir-type "views") 'views) ;; TODO: not yet implemented 
-		((string= dir-type "services") (extract-name in-grails-path (+ 1 (match-end 0)) "Service\.groovy"))
+		((string= dir-type "services") (grails-extract-name in-grails-path (+ 1 (match-end 0)) "Service\.groovy"))
 		(t (error "File not recognized")))
 	  )))))
 
@@ -86,14 +86,14 @@
       () ;; if this is not a grails app return nil
       )))
 
-(defun generic-from-file (type cur-file)
+(defun grails-generic-from-file (type cur-file)
   (cond ((string= type "controller") (concat (grails-app-base cur-file) "controllers/" (grails-clean-name cur-file) "Controller.groovy"))
 	((string= type "domain") (concat (grails-app-base cur-file) "domain/" (grails-clean-name cur-file) ".groovy"))
 	((string= type "service") (concat (grails-app-base cur-file) "services/" (grails-clean-name cur-file) "Service.groovy"))
 	(t (error "Type not recognized"))))
 
 ;;TODO use current directory insted of buffer-file-name
-(defun generic-from-name (type cur-name)
+(defun grails-generic-from-name (type cur-name)
   (cond ((string= type "controller") (concat (grails-app-base (buffer-file-name)) "controllers/" cur-name "Controller.groovy"))
 	((string= type "domain") (concat (grails-app-base (buffer-file-name)) "domain/" cur-name ".groovy"))
 	((string= type "service") (concat (grails-app-base (buffer-file-name)) "services/" cur-name "Service.groovy"))
@@ -117,48 +117,48 @@
   (interactive)
   (switch-to-buffer
    (find-file-noselect
-    (generic-from-file "domain" (buffer-file-name)))))
+    (grails-generic-from-file "domain" (buffer-file-name)))))
 
 (defun grails-controller-from-file ()
   "Generate the controller file path from name, e.g. -> controllers/UserController.groovy"
   (interactive)
   (switch-to-buffer
    (find-file-noselect
-    (generic-from-file "controller" (buffer-file-name)))))
+    (grails-generic-from-file "controller" (buffer-file-name)))))
 
 (defun grails-service-from-file ()
   "Generate the service file path from name, e.g. -> services/UserService.groovy"
   (interactive)
   (switch-to-buffer
    (find-file-noselect
-    (generic-from-file "service" (buffer-file-name)))))
+    (grails-generic-from-file "service" (buffer-file-name)))))
 
 (defun grails-domain-from-name (name)
   "Jump to a Grails model with name, e.g. User"
   (interactive "sGrails domain name: ")
   (switch-to-buffer
    (find-file-noselect
-    (generic-from-name "domain" (format "%s" name)))))
+    (grails-generic-from-name "domain" (format "%s" name)))))
 
 (defun grails-controller-from-name (name)
   "Jump to a Grails controller with name, e.g. User"
   (interactive "sGrails controller name: ")
   (switch-to-buffer
    (find-file-noselect
-    (generic-from-name "controller" (format "%s" name)))))
+    (grails-generic-from-name "controller" (format "%s" name)))))
 
 (defun grails-service-from-name (name)
   "Jump to a Grails service with the name provided."
   (interactive "sGrails service name: ")
   (switch-to-buffer
    (find-file-noselect
-    (generic-from-name "service" (format "%s" name)))))
+    (grails-generic-from-name "service" (format "%s" name)))))
 
 ;; TODO: view-from-file show list or try to match from controller context
 
 ;;;###autoload
-(define-minor-mode grails-minor-mode
-  "Grails Minor Mode.
+(define-minor-mode grails
+  "Grails minor mode.
      With no argument, this command toggles the mode.
      Non-null prefix argument turns on the mode.
      Null prefix argument turns off the mode.
@@ -178,6 +178,6 @@
     )
   :group 'grails)
 
-(provide 'grails-minor-mode)
+(provide 'grails)
 
-;;; grails-minor-mode.el ends here
+;;; grails.el ends here
