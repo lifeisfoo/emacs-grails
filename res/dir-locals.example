@@ -1,0 +1,11 @@
+;; This file should be positioned in your grails-project root
+;; and named .dir-locals.el
+;; Read more at:
+;; https://www.gnu.org/software/emacs/manual/html_node/emacs/Directory-Variables.html
+
+((groovy-mode (grails . 1))
+ (html-mode (grails . 1))
+ (java-mode (grails . 1)))
+
+;; To have grails mode always enabled uncomment this line
+;; ((nil . ((grails-mode . 1))))

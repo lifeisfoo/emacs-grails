@@ -58,6 +58,12 @@
 ;; prompt: answer "!" to mark code secure and save your decision.
 ;; (a configuration line is automatically added to your .emacs file)
 
+;; In order to have grails minor mode always enabled inside your project tree,
+;; place inside your `.dir-locals.el`:
+
+;;   ((nil . ((grails . 1))))
+;;
+
 ;;; Code:
 
 (defun grails-extract-name (controller-file-path start-from ending-regex)

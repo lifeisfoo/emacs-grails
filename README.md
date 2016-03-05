@@ -12,6 +12,10 @@ domain|controller|service to the relative domain|controller|service.
 This minor mode __doesn't have any external dependencies__ and works nicely 
 with Grails 2 and __Grails 3__ projects.
 
+### Demo
+
+![Emacs grails.el demo](https://raw.githubusercontent.com/lifeisfoo/emacs-grails/master/res/emacs-grails-el-demo.gif)
+
 ### Available commands
   
 | Shortcut | Effect | Example |
@@ -53,6 +57,13 @@ these major modes are loaded (only in this directory tree - the project tree)
 The first time that this code is executed, Emacs will show a security
 prompt: answer "!" to mark code secure and save your decision (a configuration 
 line is automatically added to your .emacs file).
+
+### Grails minor mode always enabled
+
+In order to have grails minor mode always enabled inside your project tree,
+place inside your `.dir-locals.el`:
+
+    ((nil . ((grails . 1))))
 
 ## Contributing
 Pull requests are welcome. 
