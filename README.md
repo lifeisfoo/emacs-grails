@@ -1,16 +1,16 @@
-# grails-minor-mode
+# grails.el
 
-Grails minor mode is an Emacs minor mode that allows an easy navigation 
+Grails.el is an Emacs minor mode that allows an easy navigation 
 of Grails projects.
 
 ## Features
 
-Grails-minor-mode allows you to fast open a domain class, a controller 
-or service just typing it's name. Moreover it can jump from the current
+Grails.el allows you to __fast open__ a domain class, a controller 
+or service just typing it's name. Moreover __it can jump__ from the current
 domain|controller|service to the relative domain|controller|service.
 
 This minor mode __doesn't have any external dependencies__ and works nicely 
-with Grails 2 and Grails 3 projects.
+with Grails 2 and __Grails 3__ projects.
 
 ### Available commands
   
@@ -32,21 +32,21 @@ Class names with __packages are fully supported__.
 ## Installation
 
 Copy this file to to some location in your Emacs load path.  Then add
-`(require 'grails-minor-mode)` to your Emacs initialization (.emacs,
+`(require 'grails)` to your Emacs initialization (.emacs,
 init.el, or something):
 
-    (require 'grails-minor-mode)
+    (require 'grails)
 
 ## Configuration
 
-Then, to auto enable grails-minor-mode, create a .dir-locals.el file
+Then, to auto enable grails minor mode, create a .dir-locals.el file
 in the root of the grails project with this configuration:
 
-    ((groovy-mode (grails-minor-mode . 1))
-     (html-mode (grails-minor-mode . 1))
-     (java-mode (grails-minor-mode . 1)))
+    ((groovy-mode (grails . 1))
+     (html-mode (grails . 1))
+     (java-mode (grails . 1)))
 
-In this way, the grails-minor-mode will be auto enabled when any of
+In this way, the grails minor mode will be auto enabled when any of
 these major modes are loaded (only in this directory tree - the project tree)
 (you can attach it to other modes if you want).
 
@@ -54,6 +54,11 @@ The first time that this code is executed, Emacs will show a security
 prompt: answer "!" to mark code secure and save your decision (a configuration 
 line is automatically added to your .emacs file).
 
-### License
+## Contributing
+Pull requests are welcome. 
+
+Check open issues for feature requests or current bugs.
+
+## License
 
 This software is released under the [GPL license version 3](http://www.gnu.org/licenses/gpl-3.0.en.html), or (at your option) any later version.
