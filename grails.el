@@ -156,6 +156,16 @@
 
 ;; TODO: view-from-file show list or try to match from controller context
 
+(defun grails-key-map ()
+  (let ((keymap (make-sparse-keymap)))
+    (define-key keymap (kbd "C-c - d") 'grails-domain-from-file)
+    (define-key keymap (kbd "C-c - c") 'grails-controller-from-file)
+    (define-key keymap (kbd "C-c - s") 'grails-service-from-file)
+    (define-key keymap (kbd "C-c - n d") 'grails-domain-from-name)
+    (define-key keymap (kbd "C-c - n c") 'grails-controller-from-name)
+    (define-key keymap (kbd "C-c - n s") 'grails-service-from-name)
+    keymap))
+
 ;;;###autoload
 (define-minor-mode grails
   "Grails minor mode.
@@ -166,16 +176,7 @@
      shortcut to fast navigate a Grails project."
   :init-value nil
   :lighter " Grails"
-  :keymap
-  '(("\C-c-d" . grails-domain-from-file)
-    ("\C-c-c" . grails-controller-from-file)
-    ("\C-c-s" . grails-service-from-file)
-    ;;("\C-c-v" . grails-view-from-file)
-    ("\C-c-nd" . grails-domain-from-name)
-    ("\C-c-nc" . grails-controller-from-name)
-    ("\C-c-ns" . grails-service-from-name)
-    ;;("\C-c-nv" . grails-view-from-name)
-    )
+  :keymap (grails-key-map)
   :group 'grails)
 
 (provide 'grails)
