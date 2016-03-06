@@ -1,5 +1,7 @@
 # grails.el
 
+[![MELPA](http://melpa.org/packages/grails-badge.svg)](http://melpa.org/#/grails)
+
 Grails.el is an Emacs minor mode that allows an easy navigation 
 of Grails projects.
 
