@@ -92,73 +92,59 @@
       () ;; if this is not a grails app return nil
       )))
 
-(defun grails-generic-from-file (type cur-file)
-  (cond ((string= type "controller") (concat (grails-app-base cur-file) "controllers/" (grails-clean-name cur-file) "Controller.groovy"))
-	((string= type "domain") (concat (grails-app-base cur-file) "domain/" (grails-clean-name cur-file) ".groovy"))
-	((string= type "service") (concat (grails-app-base cur-file) "services/" (grails-clean-name cur-file) "Service.groovy"))
+(defun grails-find-file-for-type-and-name (grails-type grails-class-name)
+  (setq base-path (grails-app-base (buffer-file-name)))
+  (setq class-name grails-class-name)
+  ;; class-name is nil when  we're calling it for a 'from-file' search
+  ;; and we need to extract the class name from the current open buffer file name
+  (unless class-name
+    (setq class-name (grails-clean-name (buffer-file-name))))
+  (cond ((string= grails-type "controller") (concat base-path "controllers/" class-name "Controller.groovy"))
+	((string= grails-type "domain") (concat base-path "domain/" class-name ".groovy"))
+	((string= grails-type "service") (concat base-path "services/" class-name "Service.groovy"))
 	(t (error "Type not recognized"))))
-
-;;TODO use current directory insted of buffer-file-name
-(defun grails-generic-from-name (type cur-name)
-  (cond ((string= type "controller") (concat (grails-app-base (buffer-file-name)) "controllers/" cur-name "Controller.groovy"))
-	((string= type "domain") (concat (grails-app-base (buffer-file-name)) "domain/" cur-name ".groovy"))
-	((string= type "service") (concat (grails-app-base (buffer-file-name)) "services/" cur-name "Service.groovy"))
-	(t (error "Type not recognized"))))
-
-;; TODO: unique generic-from-* function
-;; (defun generic-from-all (dest-type dest-name-type dest-name)
-;;   (let ((base-path (cond ((string= dest-name-type "current-file") (grails-app-base dest-name))
-;; 			 ((string= dest-name-type "name") (grails-app-base (buffer-file-name)))
-;; 			 (t (error "Dest-name-type not recognized")))))
-;;     (let ((grails-name (cond ((string= dest-name-type "current-file") (grails-clean-name dest-name))
-;; 			     ((string= dest-name-type "name") dest-name)
-;; 			     (t (error "Dest-name-type not recognized")))))
-;;       (cond ((string= dest-type "controller") (concat base-path "controllers/" grails-name "Controller.groovy"))
-;; 	    ((string= dest-type "domain") (concat base-path "domain/" grails-name ".groovy"))
-;; 	    ((string= dest-type "service") (concat base-path "services/" grails-name "Service.groovy"))
-;;	    (t (error "Type not recognized"))))))
 
 (defun grails-domain-from-file ()
   "Generate the domain file path from name, e.g. -> domain/User.groovy"
   (interactive)
   (switch-to-buffer
    (find-file-noselect
-    (grails-generic-from-file "domain" (buffer-file-name)))))
+    (grails-find-file-for-type-and-name "domain" nil))))
 
 (defun grails-controller-from-file ()
   "Generate the controller file path from name, e.g. -> controllers/UserController.groovy"
   (interactive)
   (switch-to-buffer
    (find-file-noselect
-    (grails-generic-from-file "controller" (buffer-file-name)))))
+    (grails-find-file-for-type-and-name "controller" nil))))
 
 (defun grails-service-from-file ()
   "Generate the service file path from name, e.g. -> services/UserService.groovy"
   (interactive)
   (switch-to-buffer
    (find-file-noselect
-    (grails-generic-from-file "service" (buffer-file-name)))))
+    (grails-find-file-for-type-and-name "service" nil))))
 
 (defun grails-domain-from-name (name)
   "Jump to a Grails model with name, e.g. User"
   (interactive "sGrails domain name: ")
   (switch-to-buffer
    (find-file-noselect
-    (grails-generic-from-name "domain" (format "%s" name)))))
+    (grails-find-file-for-type-and-name "domain" (format "%s" name)))))
 
 (defun grails-controller-from-name (name)
   "Jump to a Grails controller with name, e.g. User"
   (interactive "sGrails controller name: ")
   (switch-to-buffer
    (find-file-noselect
-    (grails-generic-from-name "controller" (format "%s" name)))))
+    (grails-find-file-for-type-and-name "controller" (format "%s" name)))))
 
 (defun grails-service-from-name (name)
   "Jump to a Grails service with the name provided."
   (interactive "sGrails service name: ")
   (switch-to-buffer
    (find-file-noselect
-    (grails-generic-from-name "service" (format "%s" name)))))
+    (grails-find-file-for-type-and-name "service" (format "%s" name)))))
 
 ;; TODO: view-from-file show list or try to match from controller context
 
