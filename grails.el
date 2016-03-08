@@ -104,58 +104,26 @@
 	((string= grails-type "service") (concat base-path "services/" class-name "Service.groovy"))
 	(t (error "Type not recognized"))))
 
-(defun grails-domain-from-file ()
-  "Generate the domain file path from name, e.g. -> domain/User.groovy"
-  (interactive)
-  (switch-to-buffer
-   (find-file-noselect
-    (grails-find-file-for-type-and-name "domain" nil))))
-
-(defun grails-controller-from-file ()
-  "Generate the controller file path from name, e.g. -> controllers/UserController.groovy"
-  (interactive)
-  (switch-to-buffer
-   (find-file-noselect
-    (grails-find-file-for-type-and-name "controller" nil))))
-
-(defun grails-service-from-file ()
-  "Generate the service file path from name, e.g. -> services/UserService.groovy"
-  (interactive)
-  (switch-to-buffer
-   (find-file-noselect
-    (grails-find-file-for-type-and-name "service" nil))))
-
-(defun grails-domain-from-name (name)
-  "Jump to a Grails model with name, e.g. User"
-  (interactive "sGrails domain name: ")
-  (switch-to-buffer
-   (find-file-noselect
-    (grails-find-file-for-type-and-name "domain" (format "%s" name)))))
-
-(defun grails-controller-from-name (name)
-  "Jump to a Grails controller with name, e.g. User"
-  (interactive "sGrails controller name: ")
-  (switch-to-buffer
-   (find-file-noselect
-    (grails-find-file-for-type-and-name "controller" (format "%s" name)))))
-
-(defun grails-service-from-name (name)
-  "Jump to a Grails service with the name provided."
-  (interactive "sGrails service name: ")
-  (switch-to-buffer
-   (find-file-noselect
-    (grails-find-file-for-type-and-name "service" (format "%s" name)))))
-
-;; TODO: view-from-file show list or try to match from controller context
+(defmacro grails-fun-gen-from-file (grails-type)
+  (let ((funsymbol (intern (concat "grails-" grails-type "-from-file"))))
+    `(defun ,funsymbol () (interactive) (switch-to-buffer
+					 (find-file-noselect
+					  (grails-find-file-for-type-and-name ,grails-type nil))))))
+;; TODO: use a single function for both from-file and from-name
+(defmacro grails-fun-gen-from-name (grails-type)
+  (let ((funsymbol (intern (concat "grails-" grails-type "-from-name"))))
+    `(defun ,funsymbol (name) (interactive ,(concat "sGrails " grails-type  " name: ")) (switch-to-buffer
+					 (find-file-noselect
+					  (grails-find-file-for-type-and-name ,grails-type (format "%s" name)))))))
 
 (defun grails-key-map ()
   (let ((keymap (make-sparse-keymap)))
-    (define-key keymap (kbd "C-c - d") 'grails-domain-from-file)
-    (define-key keymap (kbd "C-c - c") 'grails-controller-from-file)
-    (define-key keymap (kbd "C-c - s") 'grails-service-from-file)
-    (define-key keymap (kbd "C-c - n d") 'grails-domain-from-name)
-    (define-key keymap (kbd "C-c - n c") 'grails-controller-from-name)
-    (define-key keymap (kbd "C-c - n s") 'grails-service-from-name)
+    (define-key keymap (kbd "C-c - d") (grails-fun-gen-from-file "domain"))
+    (define-key keymap (kbd "C-c - c") (grails-fun-gen-from-file "controller"))
+    (define-key keymap (kbd "C-c - s") (grails-fun-gen-from-file "service"))
+    (define-key keymap (kbd "C-c - n d") (grails-fun-gen-from-name "domain"))
+    (define-key keymap (kbd "C-c - n c") (grails-fun-gen-from-name "controller"))
+    (define-key keymap (kbd "C-c - n s") (grails-fun-gen-from-name "service"))
     keymap))
 
 ;;;###autoload
