@@ -130,6 +130,7 @@
     (define-key keymap (kbd "C-c - n d") (grails-fun-gen-from-name "domain"))
     (define-key keymap (kbd "C-c - n c") (grails-fun-gen-from-name "controller"))
     (define-key keymap (kbd "C-c - n s") (grails-fun-gen-from-name "service"))
+    (define-key keymap (kbd "C-c - n v") (grails-fun-gen-from-name "views"))
     keymap))
 
 ;;;###autoload
