@@ -7,9 +7,11 @@ of Grails projects.
 
 ## Features
 
-Grails.el allows you to __fast open__ a domain class, a controller 
-or service just typing it's name. Moreover __it can jump__ from the current
-domain|controller|service to the relative domain|controller|service.
+Grails.el allows you to __fast open__ a domain class, a controller, a service or a view providing
+customized open functions for each Grails file type. Now with autocompletion and history support.
+
+Moreover __it can jump__ from the current domain|controller|service to the 
+relative domain|controller|service.
 
 This minor mode __doesn't have any external dependencies__ and works nicely 
 with Grails 2 and __Grails 3__ projects.
@@ -25,15 +27,15 @@ with Grails 2 and __Grails 3__ projects.
 | `C-c` `-` `d`  | Open the Domain class relative to the current file | If current file is `controllers/UserController.groovy`, it opens  `domain/User.groovy` |
 | `C-c` `-` `c`  | Open the Controller class relative to the current file | If current file is `domain/User.groovy`, it opens  `controllers/UserController.groovy` |
 | `C-c` `-` `s`  | Open the Service class relative to the current file | If current file is `controllers/UserController.groovy`, it opens  `services/UserService.groovy` |
-| `C-c` `-` `n` `d`| Ask for a class name and open to the relative Domain class | If `name` is `User`, it opens  `domain/User.groovy` |
-| `C-c` `-` `n` `c`| Ask for a class name and open to the relative Controller class | If `name` is `User`, it opens  `controllers/UserController.groovy` |
-| `C-c` `-` `n` `s`| Ask for a class name and open to the relative Service class | If `name` is `User`, it opens  `services/UserService.groovy` |
+| `C-c` `-` `n` `d`| Ask for a Domain file with a customized open file prompt | - |
+| `C-c` `-` `n` `c`| Ask for a Controller file with a customized open file prompt | - |
+| `C-c` `-` `n` `s`| Ask for a Service file with a customized open file prompt | - |
+| `C-c` `-` `n` `v`| Ask for a View file with a customized open file prompt | - |
 
-#### Class names with packages
+#### Class names with packages and jump features
 Class names with __packages are fully supported__.
 
 - `C-c` `-` `c` (if current buffer is `domain/my/package/User.groovy`) will open `controllers/my/package/UserController.groovy` 
-- `C-c` `-` `n` `c` `my/package/User` will open `controllers/my/package/UserController.groovy`
 
 ## Installation
 
