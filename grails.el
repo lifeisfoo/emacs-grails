@@ -66,6 +66,12 @@
 
 ;;; Code:
 
+(defvar grails-dir-name-by-type
+  '(("view" "views")
+    ("controller" "controllers")
+    ("domain" "domain")
+    ("service" "services")))
+
 (defun grails-extract-name (controller-file-path start-from ending-regex)
   "Transform MyClassController.groovy to MyClass, or my/package/MyClassController.groovy to my/package/MyClass."
   (let ((end (string-match ending-regex (substring controller-file-path start-from nil))))
@@ -93,16 +99,16 @@
       )))
 
 (defun grails-find-file-for-type-and-name (grails-type grails-class-name)
-  (setq base-path (grails-app-base (buffer-file-name)))
-  (setq class-name grails-class-name)
-  ;; class-name is nil when  we're calling it for a 'from-file' search
-  ;; and we need to extract the class name from the current open buffer file name
-  (unless class-name
-    (setq class-name (grails-clean-name (buffer-file-name))))
-  (cond ((string= grails-type "controller") (concat base-path "controllers/" class-name "Controller.groovy"))
-	((string= grails-type "domain") (concat base-path "domain/" class-name ".groovy"))
-	((string= grails-type "service") (concat base-path "services/" class-name "Service.groovy"))
-	(t (error "Type not recognized"))))
+  (let ((base-path (grails-app-base (buffer-file-name)))
+	(class-name grails-class-name))
+    ;; class-name is nil when  we're calling it for a 'from-file' search
+    ;; and we need to extract the class name from the current open buffer file name
+    (unless class-name
+      (setq class-name (grails-clean-name (buffer-file-name))))
+    (cond ((string= grails-type "controller") (concat base-path "controllers/" class-name "Controller.groovy"))
+	  ((string= grails-type "domain") (concat base-path "domain/" class-name ".groovy"))
+	  ((string= grails-type "service") (concat base-path "services/" class-name "Service.groovy"))
+	  (t (error "Type not recognized")))))
 
 (defmacro grails-fun-gen-from-file (grails-type)
   (let ((funsymbol (intern (concat "grails-" grails-type "-from-file"))))
@@ -118,7 +124,7 @@
 		    "Enter file name:"
 		    (concat
 		     (grails-app-base (buffer-file-name))
-		     ,(concat grails-type  "/")))))
+		     ,(concat (car (cdr (assoc grails-type grails-dir-name-by-type)))  "/")))))
 	      (switch-to-buffer
 	       (find-file-noselect x))))))
 
@@ -130,7 +136,7 @@
     (define-key keymap (kbd "C-c - n d") (grails-fun-gen-from-name "domain"))
     (define-key keymap (kbd "C-c - n c") (grails-fun-gen-from-name "controller"))
     (define-key keymap (kbd "C-c - n s") (grails-fun-gen-from-name "service"))
-    (define-key keymap (kbd "C-c - n v") (grails-fun-gen-from-name "views"))
+    (define-key keymap (kbd "C-c - n v") (grails-fun-gen-from-name "view"))
     keymap))
 
 ;;;###autoload
