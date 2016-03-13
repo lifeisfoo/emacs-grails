@@ -109,12 +109,18 @@
     `(defun ,funsymbol () (interactive) (switch-to-buffer
 					 (find-file-noselect
 					  (grails-find-file-for-type-and-name ,grails-type nil))))))
-;; TODO: use a single function for both from-file and from-name
+
 (defmacro grails-fun-gen-from-name (grails-type)
   (let ((funsymbol (intern (concat "grails-" grails-type "-from-name"))))
-    `(defun ,funsymbol (name) (interactive ,(concat "sGrails " grails-type  " name: ")) (switch-to-buffer
-					 (find-file-noselect
-					  (grails-find-file-for-type-and-name ,grails-type (format "%s" name)))))))
+    `(defun ,funsymbol () (interactive)
+	    (let ((x
+		   (read-file-name
+		    "Enter file name:"
+		    (concat
+		     (grails-app-base (buffer-file-name))
+		     ,(concat grails-type  "/")))))
+	      (switch-to-buffer
+	       (find-file-noselect x))))))
 
 (defun grails-key-map ()
   (let ((keymap (make-sparse-keymap)))
