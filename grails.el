@@ -66,17 +66,11 @@
 
 ;;; Code:
 
-(defvar grails-dir-name-by-type
-  '(("view" "views")
-    ("controller" "controllers")
-    ("domain" "domain")
-    ("service" "services")))
-;; TODO: refactor
-;; only supported by jump method
 (defvar grails-dir-name-by-type-s
   '((controller "controllers")
     (domain "domain")
-    (service "services")))
+    (service "services")
+    (view "views")))
 
 (defvar grails-postfix-by-type-s
   '((view ".gsp")
@@ -84,12 +78,19 @@
     (domain ".groovy")
     (service "Service.groovy")))
 
+;;TODO use reverse match and avoid this list
+(defvar grails-type-symbol-by-directory
+  '(("controllers" controller)
+    ("domain" domain)
+    ("services" service)
+    ("views" view)))
+
 (defun grails-dir-by-type-and-name (type class-name base-path)
   "Return the file path (string) for the type and the class-name.
   
    E.g. type='domain, class-name=User and base-path=/prj/grails-app/
         will output /prj/grails-app/domain/User.groovy
-"
+  "
   (concat
    base-path
    (car (cdr (assoc type grails-dir-name-by-type-s)))
@@ -97,34 +98,51 @@
    class-name
    (car (cdr (assoc type grails-postfix-by-type-s)))))
 
-(defun grails-extract-name (controller-file-path start-from ending-regex)
-  "Transform MyClassController.groovy to MyClass, or my/package/MyClassController.groovy to my/package/MyClass."
-  (let ((end (string-match ending-regex (substring controller-file-path start-from nil))))
-    (substring (substring controller-file-path start-from nil) 0 end)))
+(defun grails-extract-name (file-path grails-type)
+  "Transform MyClassController.groovy to MyClass, 
+   or my/package/MyClassController.groovy to my/package/MyClass.
+  "
+  (cond ((eq grails-type 'controller)
+         (let ((end (string-match "Controller\.groovy" file-path)))
+           (substring file-path 0 end)))
+        ((eq grails-type 'domain)
+         (let ((end (string-match "\.groovy" file-path)))
+           (substring file-path 0 end)))
+        ((eq grails-type 'view)
+         (error "Jumping from views isn't supported"))
+        ((eq grails-type 'service)
+         (let ((end (string-match "Service\.groovy" file-path)))
+           (substring file-path 0 end)))
+        (t (error "Grails type not recognized"))))
 
-(defun grails-clean-name (file-name)
-  "Detect current file type and extract it's clean class-name"
-  (let ((start (string-match "/grails-app/" file-name)))
-    (let ((end (match-end 0)))
-      (let ((in-grails-path (substring file-name end nil))) ;; substring that follow 'grails-app/' to the end
-	(let ((dir-type (substring in-grails-path (string-match "^[a-zA-Z]+" in-grails-path) (match-end 0))))
-	  (cond ((string= dir-type "controllers") (grails-extract-name in-grails-path (+ 1 (match-end 0)) "Controller\.groovy"))
-		((string= dir-type "domain") (grails-extract-name in-grails-path (+ 1 (match-end 0)) "\.groovy"))
-		((string= dir-type "views") (error "Jumping from views isn't yet supported")) ;; TODO: not yet implemented 
-		((string= dir-type "services") (grails-extract-name in-grails-path (+ 1 (match-end 0)) "Service\.groovy"))
-		(t (error "File not recognized")))
-	  )))))
+(defun grails-clean-name (file)
+  "Detect current file type and extract it's clean class-name.
+
+  E.g. ~/prj/grails-app/controllers/UserController.groovy
+  will results in User
+
+  Or ~/grails-app/domain/pkg/User.groovy
+  will results in pkg/User
+  "
+  (string-match "\\(^.*/grails-app/\\)\\([a-zA-Z]+\\)/\\(.*\\)" file)
+  (let ((base-path (match-string 1 file))
+        (dir-type (match-string 2 file))
+        (file-path (match-string 3 file)))
+    (let ((grails-type (car (cdr (assoc dir-type grails-type-symbol-by-directory)))))
+      (if grails-type
+          (grails-extract-name file-path grails-type)
+        (error "Type not recognized")))))
 
 (defun grails-app-base (path)
   "Get the current grails app base path /my/abs/path/grails-app/ if exist, else nil"
-  (let ((start (string-match "/grails-app/" path)))
+  (let ((start (string-match "^.*/grails-app/" path)))
     (if start
 	(substring path 0 (match-end 0))
       () ;; if this is not a grails app return nil
       )))
 
 (defun grails-find-file-auto (grails-type current-file)
-  "Generate the relative file path for the current-file and grails-type.
+  "Generate the corresponding file path for the current-file and grails-type.
 
    grails-type is a symbol (e.g. 'domain, 'controller, 'service)
    current-file is a file path
@@ -134,12 +152,10 @@
           '~/prj/grails-app/controllers/UserController.groovy')
    Will output: '~/prj/grails-app/domain/User.groovy'
 
-"
+  "
   (let ((base-path (grails-app-base current-file))
 	(class-name (grails-clean-name current-file)))
-    (if (assoc grails-type grails-dir-name-by-type-s)
-	(grails-dir-by-type-and-name grails-type class-name base-path)
-      (error "Type not recognized"))))
+    (grails-dir-by-type-and-name grails-type class-name base-path)))
 
 (defmacro grails-fun-gen-from-file (grails-type)
   (let ((funsymbol (intern (concat "grails-" (symbol-name grails-type) "-from-file"))))
@@ -149,14 +165,14 @@
 					   ',grails-type (buffer-file-name)))))))
 
 (defmacro grails-fun-gen-from-name (grails-type)
-  (let ((funsymbol (intern (concat "grails-" grails-type "-from-name"))))
+  (let ((funsymbol (intern (concat "grails-" (symbol-name grails-type) "-from-name"))))
     `(defun ,funsymbol () (interactive)
 	    (let ((x
 		   (read-file-name
 		    "Enter file name:"
 		    (concat
 		     (grails-app-base (buffer-file-name))
-		     ,(concat (car (cdr (assoc grails-type grails-dir-name-by-type)))  "/")))))
+		     ,(concat (car (cdr (assoc grails-type grails-dir-name-by-type-s)))  "/")))))
 	      (switch-to-buffer
 	       (find-file-noselect x))))))
 
@@ -165,10 +181,10 @@
     (define-key keymap (kbd "C-c - d") (grails-fun-gen-from-file domain))
     (define-key keymap (kbd "C-c - c") (grails-fun-gen-from-file controller))
     (define-key keymap (kbd "C-c - s") (grails-fun-gen-from-file service))
-    (define-key keymap (kbd "C-c - n d") (grails-fun-gen-from-name "domain"))
-    (define-key keymap (kbd "C-c - n c") (grails-fun-gen-from-name "controller"))
-    (define-key keymap (kbd "C-c - n s") (grails-fun-gen-from-name "service"))
-    (define-key keymap (kbd "C-c - n v") (grails-fun-gen-from-name "view"))
+    (define-key keymap (kbd "C-c - n d") (grails-fun-gen-from-name domain))
+    (define-key keymap (kbd "C-c - n c") (grails-fun-gen-from-name controller))
+    (define-key keymap (kbd "C-c - n s") (grails-fun-gen-from-name service))
+    (define-key keymap (kbd "C-c - n v") (grails-fun-gen-from-name view))
     keymap))
 
 ;;;###autoload
