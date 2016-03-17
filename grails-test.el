@@ -43,10 +43,8 @@
                 "~/grails-app/services/pkg/TestService.groovy")
                "Test"))
   ;; views
-  (should (equal
-           (grails-clean-name
-            "~/grails-app/views/myView.gsp")
-           'views))
+  (should-error (grails-clean-name
+            "~/grails-app/views/myView.gsp"))
   ;; error
   (should-error (grails-clean-name
                  "~/grails-app/custom/Test.groovy")))
