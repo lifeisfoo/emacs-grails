@@ -66,24 +66,17 @@
 
 ;;; Code:
 
-(defvar grails-dir-name-by-type-s
+(defvar grails-dir-name-by-type
   '((controller "controllers")
     (domain "domain")
     (service "services")
     (view "views")))
 
-(defvar grails-postfix-by-type-s
-  '((view ".gsp")
-    (controller "Controller.groovy")
+(defvar grails-postfix-by-type
+  '((controller "Controller.groovy")
     (domain ".groovy")
-    (service "Service.groovy")))
-
-;;TODO use reverse match and avoid this list
-(defvar grails-type-symbol-by-directory
-  '(("controllers" controller)
-    ("domain" domain)
-    ("services" service)
-    ("views" view)))
+    (service "Service.groovy")
+    (view ".gsp")))
 
 (defun grails-dir-by-type-and-name (type class-name base-path)
   "Return the file path (string) for the type and the class-name.
@@ -93,10 +86,10 @@
   "
   (concat
    base-path
-   (car (cdr (assoc type grails-dir-name-by-type-s)))
+   (car (cdr (assoc type grails-dir-name-by-type)))
    "/"
    class-name
-   (car (cdr (assoc type grails-postfix-by-type-s)))))
+   (car (cdr (assoc type grails-postfix-by-type)))))
 
 (defun grails-extract-name (file-path grails-type)
   "Transform MyClassController.groovy to MyClass, 
@@ -128,7 +121,7 @@
   (let ((base-path (match-string 1 file))
         (dir-type (match-string 2 file))
         (file-path (match-string 3 file)))
-    (let ((grails-type (car (cdr (assoc dir-type grails-type-symbol-by-directory)))))
+    (let ((grails-type (car (rassoc (cons dir-type '()) grails-dir-name-by-type))))
       (if grails-type
           (grails-extract-name file-path grails-type)
         (error "Type not recognized")))))
@@ -172,7 +165,7 @@
 		    "Enter file name:"
 		    (concat
 		     (grails-app-base (buffer-file-name))
-		     ,(concat (car (cdr (assoc grails-type grails-dir-name-by-type-s)))  "/")))))
+		     ,(concat (car (cdr (assoc grails-type grails-dir-name-by-type)))  "/")))))
 	      (switch-to-buffer
 	       (find-file-noselect x))))))
 
