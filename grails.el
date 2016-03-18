@@ -78,6 +78,57 @@
     (service "Service.groovy")
     (view ".gsp")))
 
+(defvar grails-properties-by-version
+  '((2 "application.properties" "^app.grails.version=")
+    (3 "gradle.properties" "^grailsVersion=")))
+
+;;
+;;
+;; Utils functions
+;;
+;;
+
+(defun util-string-from-file (file-path)
+  "Return a string with file-path contents."
+  (with-temp-buffer
+    (insert-file-contents file-path)
+    (buffer-string)))
+
+;;
+;;
+;; Internal functions (non interactive)
+;;
+;;
+
+(defun grails-grep-version (string)
+  "Try all regex on the string to detect major version.
+
+  E.g. string=grailsVersion=3.0.1 will return 3
+  "
+  (let (version)
+    (dolist (elt grails-properties-by-version version)
+      (if (string-match (car (cddr elt)) string)
+          (setq version (car elt))))))
+
+(defun grails-version-detect (file-path)
+  "Try to detect the Grails version of the project from file-path.
+
+   Grails 2 projects have an application.properties file.
+   Grails 3 projects have a gradle.properties file.
+  "
+  (let (version)
+    (dolist (elt grails-properties-by-version version)
+      (let ((inside-path
+             (concat (grails-app-base file-path) "../" (car (cdr elt))))
+            (outside-path
+             (concat (file-name-directory file-path) "/" (car (cdr elt)))))
+        (cond ((file-readable-p inside-path)
+               (setq version (grails-grep-version
+                (util-string-from-file inside-path))))
+              ((file-readable-p outside-path)
+               (setq version (grails-grep-version
+                (util-string-from-file outside-path)))))))))
+
 (defun grails-dir-by-type-and-name (type class-name base-path)
   "Return the file path (string) for the type and the class-name.
   
@@ -149,6 +200,20 @@
   (let ((base-path (grails-app-base current-file))
 	(class-name (grails-clean-name current-file)))
     (grails-dir-by-type-and-name grails-type class-name base-path)))
+
+;;
+;;
+;; INTERACTIVE FUNCTIONS
+;;
+;;
+
+(defun grails-version ()
+  "Show Grails version for the project in the minibuffer"
+  (interactive)
+  (let ((version (grails-version-detect (buffer-file-name))))
+    (if version
+        (message (concat "Grails " (number-to-string version)))
+      (error "Grails version not found"))))
 
 (defmacro grails-fun-gen-from-file (grails-type)
   (let ((funsymbol (intern (concat "grails-" (symbol-name grails-type) "-from-file"))))
