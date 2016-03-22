@@ -3,7 +3,7 @@
 ;; Copyright (c) 2016 Alessandro Miliucci
 ;;
 ;; Authors: Alessandro Miliucci <lifeisfoo@gmail.com>
-;; Version: 0.3.0
+;; Version: 0.3.1
 ;; URL: https://github.com/lifeisfoo/emacs-grails
 ;; Package-Requires: ((emacs "24"))
 
