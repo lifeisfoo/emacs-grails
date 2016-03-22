@@ -74,25 +74,6 @@
   (should-error (grails-clean-name
                  "~/grails-app/custom/Test.groovy")))
 
-(ert-deftest grails-test-app-base ()
-  "Tests the grails-app-base function."
-  (should (equal
-           (grails-app-base
-            "/path/grails-app/domain/Test.groovy")
-           "/path/grails-app/"))
-  (should-not (equal
-               (grails-app-base
-                "/path/grails-app/domain/Test.groovy")
-               "/path/grails-app"))
-  (should-not (equal
-               (grails-app-base
-                "/path/grails-app/domain/Test.groovy")
-               "/error/"))
-  (should (equal
-           (grails-app-base
-            "/not/a/grails/path")
-           nil)))
-
 (ert-deftest grails-test-dir-by-type-and-name ()
   "Test internal function"
   (should (equal
@@ -107,16 +88,3 @@
   (should (equal
            (grails-dir-by-type-and-name 'domain "pkg/User" "~/grails-app/")
            "~/grails-app/domain/pkg/User.groovy")))
-
-(ert-deftest grails-test-find-file-auto ()
-  "Tests the grails-find-file-auto function."
-  (should (equal
-           (grails-find-file-auto 'domain "~/grails-app/controllers/UserController.groovy")
-           "~/grails-app/domain/User.groovy"))
-  (should (equal
-           (grails-find-file-auto 'controller "~/grails-app/domain/User.groovy")
-           "~/grails-app/controllers/UserController.groovy"))
-  (should (equal
-           (grails-find-file-auto 'service "~/grails-app/domain/User.groovy")
-           "~/grails-app/services/UserService.groovy"))
-  (should-error (grails-find-auto 'zervice "~/grails-app/domain/User.groovy")))

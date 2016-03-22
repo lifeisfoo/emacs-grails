@@ -186,12 +186,20 @@
         (error "Type not recognized")))))
 
 (defun grails-app-base (path)
-  "Get the current grails app base path /my/abs/path/grails-app/ if exist, else nil"
-  (let ((start (string-match "^.*/grails-app/" path)))
-    (if start
-	(substring path 0 (match-end 0))
-      () ;; if this is not a grails app return nil
-      )))
+  "Get the current grails app base path /my/abs/path/grails-app/.
+
+  If exists return the app base path, else return nil.
+
+  path must be a file or must end with / - see file-name-directory doc
+  "
+  (let ((project-root (grails-project-root (file-name-directory path))))
+    (if project-root
+        (concat project-root "grails-app/")
+      (error "Grails app not found"))))
+
+(defun grails-project-root (dir)
+  "Find project root for dir"
+  (locate-dominating-file dir "grails-app"))
 
 (defun grails-find-file-auto (grails-type current-file)
   "Generate the corresponding file path for the current-file and grails-type.
