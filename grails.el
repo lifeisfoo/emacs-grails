@@ -85,6 +85,10 @@
 (defvar grails-urlmappings-by-version
   '((2 "conf/Urlmappings.groovy")
     (3 "controllers/UrlMappings.groovy")))
+;; TODO: refactor using only one list
+(defvar grails-bootstrap-by-version
+  '((2 "conf/Bootstrap.groovy")
+    (3 "init/Bootstrap.groovy")))
 
 ;;
 ;;
@@ -219,8 +223,9 @@
         (message (concat "Grails " (number-to-string version)))
       (error "Grails version not found"))))
 
+;; TODO: refactor using a macro
 (defun grails-urlmappings-file ()
-  "Show Grails version for the project in the minibuffer"
+  "Open the UrlMappings file"
   (interactive)
   (let ((version (grails-version-detect (buffer-file-name))))
     (if version
@@ -228,6 +233,18 @@
          (find-file-noselect
           (concat (grails-app-base (buffer-file-name))
                   (car (cdr (assoc version grails-urlmappings-by-version))))))
+      (error "Grails version not found"))))
+
+;; TODO: refactor using a macro
+(defun grails-bootstrap-file ()
+  "Open the Bootstrap file"
+  (interactive)
+  (let ((version (grails-version-detect (buffer-file-name))))
+    (if version
+        (switch-to-buffer
+         (find-file-noselect
+          (concat (grails-app-base (buffer-file-name))
+                  (car (cdr (assoc version grails-bootstrap-by-version))))))
       (error "Grails version not found"))))
 
 (defmacro grails-fun-gen-from-file (grails-type)
@@ -258,8 +275,10 @@
     (define-key keymap (kbd "C-c - n c") (grails-fun-gen-from-name controller))
     (define-key keymap (kbd "C-c - n s") (grails-fun-gen-from-name service))
     (define-key keymap (kbd "C-c - n v") (grails-fun-gen-from-name view))
-    (define-key keymap (kbd "C-c - ?") (grails-version))
-    (define-key keymap (kbd "C-c - u") (grails-urlmappings-file))
+    ;; p for project properties - TODO: show more information
+    (define-key keymap (kbd "C-c - p") 'grails-version)
+    (define-key keymap (kbd "C-c - u") 'grails-urlmappings-file)
+    (define-key keymap (kbd "C-c - b") 'grails-bootstrap-file)
     keymap))
 
 ;;;###autoload

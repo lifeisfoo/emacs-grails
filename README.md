@@ -27,6 +27,9 @@ with Grails 2 and __Grails 3__ projects.
 | `C-c` `-` `d`  | Open the Domain class relative to the current file | If current file is `controllers/UserController.groovy`, it opens  `domain/User.groovy` |
 | `C-c` `-` `c`  | Open the Controller class relative to the current file | If current file is `domain/User.groovy`, it opens  `controllers/UserController.groovy` |
 | `C-c` `-` `s`  | Open the Service class relative to the current file | If current file is `controllers/UserController.groovy`, it opens  `services/UserService.groovy` |
+| `C-c` `-` `p`  | Show grails project properties (only grails version by now) | - |
+| `C-c` `-` `u`  | Open the UrlMappings file | - |
+| `C-c` `-` `b`  | Open the Bootstrap file | - |
 | `C-c` `-` `n` `d`| Ask for a Domain file with a customized open file prompt | - |
 | `C-c` `-` `n` `c`| Ask for a Controller file with a customized open file prompt | - |
 | `C-c` `-` `n` `s`| Ask for a Service file with a customized open file prompt | - |
@@ -47,27 +50,33 @@ init.el, or something):
 
 ## Configuration
 
+### Always active in project tree
+
 Then, to auto enable grails minor mode, create a .dir-locals.el file
 in the root of the grails project with this configuration:
 
-    ((groovy-mode (grails . 1))
+    ((nil . ((grails . 1))))
+
+In this way, the grails minor mode will be always active inside your project tree.
+
+__The first time__ that this code is executed, Emacs will show a security
+prompt: __answer "!" to mark code secure__ and save your decision (a configuration 
+line is automatically added to your .emacs file).
+
+This is the suggested default configuration.
+
+### Active by major mode
+
+In order to have grails minor mode auto enabled only when using certain modes, 
+place this inside your `.dir-locals.el`:
+
+     ((groovy-mode (grails . 1))
      (html-mode (grails . 1))
      (java-mode (grails . 1)))
-
+     
 In this way, the grails minor mode will be auto enabled when any of
 these major modes are loaded (only in this directory tree - the project tree)
 (you can attach it to other modes if you want).
-
-The first time that this code is executed, Emacs will show a security
-prompt: answer "!" to mark code secure and save your decision (a configuration 
-line is automatically added to your .emacs file).
-
-### Grails minor mode always enabled
-
-In order to have grails minor mode always enabled inside your project tree,
-place inside your `.dir-locals.el`:
-
-    ((nil . ((grails . 1))))
 
 ## Contributing
 Pull requests are welcome. 
