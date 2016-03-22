@@ -126,16 +126,12 @@
   "
   (let (version)
     (dolist (elt grails-properties-by-version version)
-      (let ((inside-path
-             (concat (grails-app-base file-path) "../" (car (cdr elt))))
-            (outside-path
-             (concat (file-name-directory file-path) "/" (car (cdr elt)))))
-        (cond ((file-readable-p inside-path)
-               (setq version (grails-grep-version
-                (util-string-from-file inside-path))))
-              ((file-readable-p outside-path)
-               (setq version (grails-grep-version
-                (util-string-from-file outside-path)))))))))
+      (let ((prop-file
+             (concat (grails-project-root file-path) (car (cdr elt)))))
+        (if (file-readable-p prop-file)
+            (setq version
+                  (grails-grep-version
+                   (util-string-from-file prop-file))))))))
 
 (defun grails-dir-by-type-and-name (type class-name base-path)
   "Return the file path (string) for the type and the class-name.
@@ -183,7 +179,7 @@
     (let ((grails-type (car (rassoc (cons dir-type '()) grails-dir-name-by-type))))
       (if grails-type
           (grails-extract-name file-path grails-type)
-        (error "Type not recognized")))))
+        (error "Current Grails filetype not recognized")))))
 
 (defun grails-app-base (path)
   "Get the current grails app base path /my/abs/path/grails-app/.
@@ -192,14 +188,17 @@
 
   path must be a file or must end with / - see file-name-directory doc
   "
-  (let ((project-root (grails-project-root (file-name-directory path))))
+  (let ((project-root (grails-project-root path)))
     (if project-root
         (concat project-root "grails-app/")
       (error "Grails app not found"))))
 
-(defun grails-project-root (dir)
-  "Find project root for dir"
-  (locate-dominating-file dir "grails-app"))
+(defun grails-project-root (path)
+  "Find project root for dir.
+
+  path must be a file or must end with / - see file-name-directory doc.
+  "
+  (locate-dominating-file (file-name-directory path) "grails-app"))
 
 (defun grails-find-file-auto (grails-type current-file)
   "Generate the corresponding file path for the current-file and grails-type.
