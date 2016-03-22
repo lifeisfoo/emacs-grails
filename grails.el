@@ -82,6 +82,10 @@
   '((2 "application.properties" "^app.grails.version=")
     (3 "gradle.properties" "^grailsVersion=")))
 
+(defvar grails-urlmappings-by-version
+  '((2 "conf/Urlmappings.groovy")
+    (3 "controllers/UrlMappings.groovy")))
+
 ;;
 ;;
 ;; Utils functions
@@ -215,6 +219,17 @@
         (message (concat "Grails " (number-to-string version)))
       (error "Grails version not found"))))
 
+(defun grails-urlmappings-file ()
+  "Show Grails version for the project in the minibuffer"
+  (interactive)
+  (let ((version (grails-version-detect (buffer-file-name))))
+    (if version
+        (switch-to-buffer
+         (find-file-noselect
+          (concat (grails-app-base (buffer-file-name))
+                  (car (cdr (assoc version grails-urlmappings-by-version))))))
+      (error "Grails version not found"))))
+
 (defmacro grails-fun-gen-from-file (grails-type)
   (let ((funsymbol (intern (concat "grails-" (symbol-name grails-type) "-from-file"))))
     `(defun ,funsymbol () (interactive) (switch-to-buffer
@@ -243,6 +258,8 @@
     (define-key keymap (kbd "C-c - n c") (grails-fun-gen-from-name controller))
     (define-key keymap (kbd "C-c - n s") (grails-fun-gen-from-name service))
     (define-key keymap (kbd "C-c - n v") (grails-fun-gen-from-name view))
+    (define-key keymap (kbd "C-c - ?") (grails-version))
+    (define-key keymap (kbd "C-c - u") (grails-urlmappings-file))
     keymap))
 
 ;;;###autoload
