@@ -3,7 +3,7 @@
 ;; Copyright (c) 2016 Alessandro Miliucci
 ;;
 ;; Authors: Alessandro Miliucci <lifeisfoo@gmail.com>
-;; Version: 0.3.1
+;; Version: 0.3.2
 ;; URL: https://github.com/lifeisfoo/emacs-grails
 ;; Package-Requires: ((emacs "24"))
 
@@ -30,7 +30,18 @@
 ;; navigation of Gails projects.  It allows jump to a model, to a view,
 ;; to a controller or to a service.
 
-;; For more details, see the project page at
+;; Features:
+;;  - Jump to the related Domain (from the current buffer)
+;;  - Jump to the related Controller
+;;  - Jump to the related Service
+;;  - Open the Bootstrap file
+;;  - Open the UrlMappings file
+;;  - Find file prompt for domain classes
+;;  - Find file prompt for controller classes
+;;  - Find file prompt for service classes
+;;  - Find file prompt for views
+
+;; For the complete documentation, see the project page at
 
 ;; https://github.com/lifeisfoo/emacs-grails
 
