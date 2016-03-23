@@ -11,7 +11,8 @@ Grails.el allows you to __fast open__ a domain class, a controller, a service or
 customized open functions for each Grails file type. Now with autocompletion and history support.
 
 Moreover __it can jump__ from the current domain|controller|service to the 
-relative domain|controller|service.
+related domain|controller|service. Yes, you can also jump to the Bootstrap
+and UrlMappings file.
 
 This minor mode __doesn't have any external dependencies__ and works nicely 
 with Grails 2 and __Grails 3__ projects.
@@ -20,23 +21,23 @@ with Grails 2 and __Grails 3__ projects.
 
 ![Emacs grails.el demo](https://raw.githubusercontent.com/lifeisfoo/emacs-grails/master/res/emacs-grails-el-demo.gif)
 
-### Available commands
+### Available functions and default key bindings
   
-| Shortcut | Effect | Example |
-| -------- | ------ | ------- |
-| `C-c` `-` `d`  | Open the Domain class relative to the current file | If current file is `controllers/UserController.groovy`, it opens  `domain/User.groovy` |
-| `C-c` `-` `c`  | Open the Controller class relative to the current file | If current file is `domain/User.groovy`, it opens  `controllers/UserController.groovy` |
-| `C-c` `-` `s`  | Open the Service class relative to the current file | If current file is `controllers/UserController.groovy`, it opens  `services/UserService.groovy` |
-| `C-c` `-` `p`  | Show grails project properties (only grails version by now) | - |
-| `C-c` `-` `u`  | Open the UrlMappings file | - |
-| `C-c` `-` `b`  | Open the Bootstrap file | - |
-| `C-c` `-` `n` `d`| Ask for a Domain file with a customized open file prompt | - |
-| `C-c` `-` `n` `c`| Ask for a Controller file with a customized open file prompt | - |
-| `C-c` `-` `n` `s`| Ask for a Service file with a customized open file prompt | - |
-| `C-c` `-` `n` `v`| Ask for a View file with a customized open file prompt | - |
+| Function |  Default key binding | Effect |
+| -------- | -------- | ------ |
+| grails-domain-from-file | `C-c` `-` `d`  | Open the Domain class related to the current file (e.g. if current buffer is `controllers/UserController.groovy`, it opens  `domain/User.groovy` |
+| grails-controller-from-file |`C-c` `-` `c`  | Open the Controller class related to the current file (e.g. if current buffer is `domain/User.groovy`, it opens  `controllers/UserController.groovy` |
+| grails-service-from-file | `C-c` `-` `s`  | Open the Service class related to the current file (e.g. if current buffer is `controllers/UserController.groovy`, it opens  `services/UserService.groovy` |
+| grails-urlmappings-file | `C-c` `-` `u`  | Open the UrlMappings file |
+| grails-bootstrap-file | `C-c` `-` `b`  | Open the Bootstrap file |
+| grails-domain-from-name | `C-c` `-` `n` `d`| Open a find file prompt inside `grails-app/domain/` |
+| grails-controller-from-name | `C-c` `-` `n` `c`| Open a find file prompt inside `grails-app/controllers/` |
+| grails-service-from-name |`C-c` `-` `n` `s`| Open a find file prompt inside `grails-app/services/` |
+| grails-view-from-name | `C-c` `-` `n` `v`| Open a find file prompt inside `grails-app/views/` |
+| grails-version | `C-c` `-` `p`  | Show grails project properties (only grails version by now) |
 
 #### Class names with packages and jump features
-Class names with __packages are fully supported__.
+Class names with __packages are fully supported__. E.g.:
 
 - `C-c` `-` `c` (if current buffer is `domain/my/package/User.groovy`) will open `controllers/my/package/UserController.groovy` 
 
