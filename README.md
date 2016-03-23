@@ -40,6 +40,55 @@ Class names with __packages are fully supported__.
 
 - `C-c` `-` `c` (if current buffer is `domain/my/package/User.groovy`) will open `controllers/my/package/UserController.groovy` 
 
+### Custom key bindings
+
+[Emacs key binding convention](https://www.gnu.org/software/emacs/manual/html_node/elisp/Key-Binding-Conventions.html#Key-Binding-Conventions) say that a minor mode can only
+define bindings like `C-c punctuation_char other_char ...` also avoiding
+`{, }, <, >, : or ;` as the first punctuation char. So, the default bindings
+for `grails.el` starts always with the sequence `C-c -`. __If you want shorter
+bindings__, and I'm sure you want them, just read below.
+
+This mode expose a `grails-key-map` variable that you can use to customize
+default key bindings available only when grails mode is active.
+Just add to your `.emacs` file a `define-key` for every command that you want
+to bind to a custom key binding.
+
+E.g.:
+
+    ;; your .emacs file
+
+    (require 'grails) ;; do not add this if you've installed it from melpa
+
+
+    ;; jump commands
+
+    (define-key grails-key-map (kbd "C-c d") 'grails-domain-from-file)
+    (define-key grails-key-map (kbd "C-c c") 'grails-controller-from-file)
+    (define-key grails-key-map (kbd "C-c s") 'grails-service-from-file)
+    (define-key grails-key-map (kbd "C-c u") 'grails-urlmappings-file)
+    (define-key grails-key-map (kbd "C-c b") 'grails-bootstrap-file)
+
+
+    ;; find file commands
+
+    ;; equals to C-x C-f called from /your/project/grails-app/domain/
+    (define-key grails-key-map (kbd "C-c C-f d") 'grails-domain-from-name)
+
+    ;; equals to C-x C-f called from /your/project/grails-app/controllers/
+    (define-key grails-key-map (kbd "C-c C-f c") 'grails-controller-from-name)
+
+    ;; equals to C-x C-f called from /your/project/grails-app/services/
+    (define-key grails-key-map (kbd "C-c C-f s") 'grails-service-from-name)
+
+    ;; equals to C-x C-f called from /your/project/grails-app/views/
+    (define-key grails-key-map (kbd "C-c C-f v") 'grails-view-from-name)
+
+
+    ;; show Grails project properties (only version by now)
+    (define-key grails-key-map (kbd "C-c p") 'grails-version)
+
+Available commands are listed in the table above.
+
 ## Installation
 
 Copy this file to to some location in your Emacs load path.  Then add
@@ -52,7 +101,7 @@ init.el, or something):
 
 ### Always active in project tree
 
-Then, to auto enable grails minor mode, create a .dir-locals.el file
+To auto enable grails minor mode, create a .dir-locals.el file
 in the root of the grails project with this configuration:
 
     ((nil . ((grails . 1))))

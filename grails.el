@@ -273,7 +273,7 @@
 	      (switch-to-buffer
 	       (find-file-noselect x))))))
 
-(defun grails-key-map ()
+(defvar grails-key-map
   (let ((keymap (make-sparse-keymap)))
     (define-key keymap (kbd "C-c - d") (grails-fun-gen-from-file domain))
     (define-key keymap (kbd "C-c - c") (grails-fun-gen-from-file controller))
@@ -286,7 +286,8 @@
     (define-key keymap (kbd "C-c - p") 'grails-version)
     (define-key keymap (kbd "C-c - u") 'grails-urlmappings-file)
     (define-key keymap (kbd "C-c - b") 'grails-bootstrap-file)
-    keymap))
+    keymap)
+  "Keymap for `grails` mode.")
 
 ;;;###autoload
 (define-minor-mode grails
@@ -298,7 +299,7 @@
      shortcut to fast navigate a Grails project."
   :init-value nil
   :lighter " Grails"
-  :keymap (grails-key-map)
+  :keymap grails-key-map
   :group 'grails)
 
 (provide 'grails)
