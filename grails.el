@@ -176,6 +176,13 @@
            (substring file-path 0 end)))
         (t (error "Grails type not recognized"))))
 
+;;TODO - remove duplicated code
+(defun grails-type-by-dir (file)
+  "Detect current file type using its path"
+  (string-match "\\(^.*/grails-app/\\)\\([a-zA-Z]+\\)/\\(.*\\)" file)
+  (let ((dir-type (match-string 2 file)))
+    (car (rassoc (cons dir-type '()) grails-dir-name-by-type))))
+
 (defun grails-clean-name (file)
   "Detect current file type and extract it's clean class-name.
 
@@ -193,6 +200,12 @@
       (if grails-type
           (grails-extract-name file-path grails-type)
         (error "Current Grails filetype not recognized")))))
+
+(defun grails-clean-name-no-pkg (file)
+  "Same as grails-clean-name but without package prefix"
+  (let ((clean-name (grails-clean-name file)))
+    (string-match "\\([a-zA-Z0-9]+\\)$" clean-name)
+    (match-string 1 clean-name)))
 
 (defun grails-app-base (path)
   "Get the current grails app base path /my/abs/path/grails-app/.
@@ -228,6 +241,48 @@
   (let ((base-path (grails-app-base current-file))
 	(class-name (grails-clean-name current-file)))
     (grails-dir-by-type-and-name grails-type class-name base-path)))
+
+(defun grails-string-is-action (line)
+  "Detect if line contains a controller action name"
+  (if (string-match "^.*def[[:blank:]]+\\([a-zA-Z0-9]+\\)[[:blank:]]*(.*).*{" line)
+      (match-string 1 line)
+    nil))
+
+(defun grails-current-line-number ()
+  "Return the current buffer line (cursor)"
+  (1+ (count-lines 1 (point))))
+
+(defun grails-find-current-controller-action ()
+  "Loop from the current line backwards, looking for a controller action definition."
+  (setq continue 'true)
+  (setq action-name nil)
+  (save-excursion
+    (while continue
+      (if (> (grails-current-line-number) 1)
+          (let ((cur-line
+                 (buffer-substring-no-properties (line-beginning-position) (line-end-position))))
+            (if (grails-string-is-action cur-line)
+                (progn (setq continue nil) ;;break
+                       (setq action-name (grails-string-is-action cur-line))))
+            (forward-line -1))
+        (setq continue nil)))
+    (if action-name
+        action-name
+      (error "Action name not found"))))
+
+(defun grails-view-from-string (view-name)
+  "Open a view for the current controller and the view-name."
+  (if (grails-type-by-dir (buffer-file-name))
+      (switch-to-buffer
+       (find-file-noselect
+        (concat
+         (grails-app-base (buffer-file-name))
+         "views/"
+         (downcase (grails-clean-name-no-pkg (buffer-file-name)))
+         "/"
+         view-name
+         ".gsp")))
+    (error "This is not a controller class")))
 
 ;;
 ;;
@@ -266,6 +321,16 @@
           (concat (grails-app-base (buffer-file-name))
                   (car (cdr (assoc version grails-bootstrap-by-version))))))
       (error "Grails version not found"))))
+
+(defun grails-view-from-cursor ()
+  "Open a view from the current cursor."
+  (interactive)
+  (grails-view-from-string (thing-at-point 'word)))
+
+(defun grails-view-from-context ()
+  "Open a view for the current controller action."
+  (interactive)
+  (grails-view-from-string (grails-find-current-controller-action)))
 
 (defmacro grails-fun-gen-from-file (grails-type)
   (let ((funsymbol (intern (concat "grails-" (symbol-name grails-type) "-from-file"))))
