@@ -275,7 +275,7 @@
 
 (defun grails-view-from-string (view-name)
   "Open a view for the current controller and the view-name."
-  (if (grails-type-by-dir (buffer-file-name))
+  (if (eq 'controller (grails-type-by-dir (buffer-file-name)))
       (switch-to-buffer
        (find-file-noselect
         (concat
