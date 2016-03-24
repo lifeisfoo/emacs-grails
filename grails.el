@@ -255,21 +255,23 @@
 
 (defun grails-find-current-controller-action ()
   "Loop from the current line backwards, looking for a controller action definition."
-  (setq continue 'true)
-  (setq action-name nil)
-  (save-excursion
-    (while continue
-      (if (> (grails-current-line-number) 1)
-          (let ((cur-line
-                 (buffer-substring-no-properties (line-beginning-position) (line-end-position))))
-            (if (grails-string-is-action cur-line)
-                (progn (setq continue nil) ;;break
-                       (setq action-name (grails-string-is-action cur-line))))
-            (forward-line -1))
-        (setq continue nil)))
-    (if action-name
-        action-name
-      (error "Action name not found"))))
+  (let ((continue 'true)
+        (action-name nil))
+;;  (setq continue 'true)
+;;  (setq action-name nil)
+    (save-excursion
+      (while continue
+        (if (> (grails-current-line-number) 1)
+            (let ((cur-line
+                   (buffer-substring-no-properties (line-beginning-position) (line-end-position))))
+              (if (grails-string-is-action cur-line)
+                  (progn (setq continue nil) ;;break
+                         (setq action-name (grails-string-is-action cur-line))))
+              (forward-line -1))
+          (setq continue nil)))
+      (if action-name
+          action-name
+        (error "Action name not found")))))
 
 (defun grails-view-from-string (view-name)
   "Open a view for the current controller and the view-name."
