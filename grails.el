@@ -78,11 +78,12 @@
 
 ;;; Code:
 
-(defvar grails-dir-name-by-type
-  '((controller "controllers")
-    (domain "domain")
-    (service "services")
-    (view "views")))
+(eval-and-compile
+  (defvar grails-dir-name-by-type
+    '((controller "controllers")
+      (domain "domain")
+      (service "services")
+      (view "views"))))
 
 (defvar grails-postfix-by-type
   '((controller "Controller.groovy")
