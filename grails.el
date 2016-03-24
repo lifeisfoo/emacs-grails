@@ -32,8 +32,9 @@
 
 ;; Features:
 ;;  - Jump to the related Domain (from the current buffer)
-;;  - Jump to the related Controller
-;;  - Jump to the related Service
+;;  - Jump to the related Controller (from the current buffer)
+;;  - Jump to the related Service (from the current buffer)
+;;  - Jump to the related view(s) (from the current buffer)
 ;;  - Open the Bootstrap file
 ;;  - Open the UrlMappings file
 ;;  - Find file prompt for domain classes
@@ -356,6 +357,8 @@
     (define-key keymap (kbd "C-c - d") (grails-fun-gen-from-file domain))
     (define-key keymap (kbd "C-c - c") (grails-fun-gen-from-file controller))
     (define-key keymap (kbd "C-c - s") (grails-fun-gen-from-file service))
+    (define-key keymap (kbd "C-c - v v") 'grails-view-from-context)
+    (define-key keymap (kbd "C-c - v w") 'grails-view-from-cursor)
     (define-key keymap (kbd "C-c - n d") (grails-fun-gen-from-name domain))
     (define-key keymap (kbd "C-c - n c") (grails-fun-gen-from-name controller))
     (define-key keymap (kbd "C-c - n s") (grails-fun-gen-from-name service))

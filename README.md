@@ -1,6 +1,7 @@
 # grails.el
 
 [![MELPA](http://melpa.org/packages/grails-badge.svg)](http://melpa.org/#/grails)
+[![MELPA Stable](http://stable.melpa.org/packages/grails-badge.svg)](http://stable.melpa.org/#/grails)
 
 Grails.el is an Emacs minor mode that allows an easy navigation 
 of Grails projects.
@@ -11,8 +12,9 @@ Grails.el allows you to __fast open__ a domain class, a controller, a service or
 customized open functions for each Grails file type. Now with autocompletion and history support.
 
 Moreover __it can jump__ from the current domain|controller|service to the 
-related domain|controller|service. Yes, you can also jump to the Bootstrap
-and UrlMappings file.
+related domain|controller|service. You can also jump to the Bootstrap
+and UrlMappings file. And yes, you can jump from the current controller action
+to the related view __NEW__.
 
 This minor mode __doesn't have any external dependencies__ and works nicely 
 with Grails 2 and __Grails 3__ projects.
@@ -28,6 +30,8 @@ with Grails 2 and __Grails 3__ projects.
 | grails-domain-from-file | `C-c` `-` `d`  | Open the Domain class related to the current file (e.g. if current buffer is `controllers/UserController.groovy`, it opens  `domain/User.groovy` |
 | grails-controller-from-file |`C-c` `-` `c`  | Open the Controller class related to the current file (e.g. if current buffer is `domain/User.groovy`, it opens  `controllers/UserController.groovy` |
 | grails-service-from-file | `C-c` `-` `s`  | Open the Service class related to the current file (e.g. if current buffer is `controllers/UserController.groovy`, it opens  `services/UserService.groovy` |
+| grails-view-from-context | `C-c` `-` `v` `v` | Open the view related to the current controller action |
+| grails-view-from-cursor | `C-c` `-` `v` `w` | Open the view related to the current controller, with name equals to the current word (cursor) |
 | grails-urlmappings-file | `C-c` `-` `u`  | Open the UrlMappings file |
 | grails-bootstrap-file | `C-c` `-` `b`  | Open the Bootstrap file |
 | grails-domain-from-name | `C-c` `-` `n` `d`| Open a find file prompt inside `grails-app/domain/` |
@@ -66,6 +70,8 @@ E.g.:
     (define-key grails-key-map (kbd "C-c d") 'grails-domain-from-file)
     (define-key grails-key-map (kbd "C-c c") 'grails-controller-from-file)
     (define-key grails-key-map (kbd "C-c s") 'grails-service-from-file)
+    (define-key grails-key-map (kbd "C-c v") 'grails-view-from-context)
+    (define-key grails-key-map (kbd "C-c w") 'grails-view-from-cursor)
     (define-key grails-key-map (kbd "C-c u") 'grails-urlmappings-file)
     (define-key grails-key-map (kbd "C-c b") 'grails-bootstrap-file)
 
