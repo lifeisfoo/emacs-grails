@@ -3,7 +3,7 @@
 ;; Copyright (c) 2016 Alessandro Miliucci
 ;;
 ;; Authors: Alessandro Miliucci <lifeisfoo@gmail.com>
-;; Version: 0.4.0
+;; Version: 0.4.1
 ;; URL: https://github.com/lifeisfoo/emacs-grails
 ;; Package-Requires: ((emacs "24"))
 
@@ -97,12 +97,12 @@
     (3 "gradle.properties" "^grailsVersion=")))
 
 (defvar grails-urlmappings-by-version
-  '((2 "conf/Urlmappings.groovy")
+  '((2 "conf/UrlMappings.groovy")
     (3 "controllers/UrlMappings.groovy")))
 ;; TODO: refactor using only one list
 (defvar grails-bootstrap-by-version
-  '((2 "conf/Bootstrap.groovy")
-    (3 "init/Bootstrap.groovy")))
+  '((2 "conf/BootStrap.groovy")
+    (3 "init/BootStrap.groovy")))
 
 ;;
 ;;
