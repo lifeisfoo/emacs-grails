@@ -101,6 +101,7 @@
   '((2 "application.properties" "^app.grails.version=")
     (3 "gradle.properties" "^grailsVersion=")
     (4 "gradle.properties" "^grailsVersion=")
+    (5 "gradle.properties" "^grailsVersion=")    
     ))
 
 (defvar grails-source-code-base-directory
@@ -110,14 +111,16 @@
 (defvar grails-urlmappings-by-version
   `((2 "conf/UrlMappings.groovy")
     (3 "controllers/UrlMappings.groovy")
-    (4 ,(concat "controllers/" grails-source-code-base-directory "/UrlMappings.groovy"))
+    (4 ,(concat "controllers/" grails-source-code-base-directory "/UrlMappings.groovy")
+    (5 ,(concat "controllers/" grails-source-code-base-directory "/UrlMappings.groovy"))
     ))
 
 ;; TODO: refactor using only one list
 (defvar grails-bootstrap-by-version
   `((2 "conf/BootStrap.groovy")
     (3 "init/BootStrap.groovy")
-    (4 ,(concat "init/" grails-source-code-base-directory "/BootStrap.groovy"))
+    (4 ,(concat "init/" grails-source-code-base-directory "/BootStrap.groovy")
+    (5 ,(concat "init/" grails-source-code-base-directory "/BootStrap.groovy"))
     ))
 
 ;;
