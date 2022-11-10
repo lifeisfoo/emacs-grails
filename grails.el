@@ -111,7 +111,7 @@
 (defvar grails-urlmappings-by-version
   `((2 "conf/UrlMappings.groovy")
     (3 "controllers/UrlMappings.groovy")
-    (4 ,(concat "controllers/" grails-source-code-base-directory "/UrlMappings.groovy")
+    (4 ,(concat "controllers/" grails-source-code-base-directory "/UrlMappings.groovy"))
     (5 ,(concat "controllers/" grails-source-code-base-directory "/UrlMappings.groovy"))
     ))
 
@@ -119,7 +119,7 @@
 (defvar grails-bootstrap-by-version
   `((2 "conf/BootStrap.groovy")
     (3 "init/BootStrap.groovy")
-    (4 ,(concat "init/" grails-source-code-base-directory "/BootStrap.groovy")
+    (4 ,(concat "init/" grails-source-code-base-directory "/BootStrap.groovy"))
     (5 ,(concat "init/" grails-source-code-base-directory "/BootStrap.groovy"))
     ))
 
